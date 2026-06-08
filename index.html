@@ -490,28 +490,59 @@ function rTask(t,p){
       <div class="t-desc">${t.desc}</div>
       <div class="t-meta">${tags}<span class="t-dur">⏱ ${t.dur}</span><button class="t-note-btn" data-nb="${t.id}">📝 Catatan</button></div>
       <div class="note-area ${t.note?'open':''}" id="na-${t.id}">
-        <textarea class="note-inp" placeholder="Tulis catatan atau refleksimu di sini..." data-ns="${t.id}">${t.note}</textarea>
+        <textarea class="note-inp" placeholder="Tulis catatan atau refleksimu di sini..." id="ta-${t.id}">${t.note}</textarea>
+        <div style="text-align: right; margin-top: 8px;">
+          <button class="f-btn active" style="font-size: 11px; padding: 6px 12px; border-radius: 6px;" data-save-note="${t.id}">Simpan Catatan</button>
+        </div>
       </div>
     </div>
   </div>`;
 }
 function attachTL(){
+  // Fungsi centang task
   document.querySelectorAll('[data-chk]').forEach(el=>{
     el.addEventListener('click',()=>{
       const t=S.tasks.find(x=>x.id===+el.dataset.chk);
       t.done=!t.done;
       renderTodo(); renderDash();
-      simpanKeSheets('task', t.id, { done: t.done }); // <-- Mengirim status centang
+      simpanKeSheets('task', t.id, { done: t.done }); 
     });
   });
+  
+  // Fungsi buka/tutup area catatan
   document.querySelectorAll('[data-nb]').forEach(el=>{
     el.addEventListener('click',()=>{document.getElementById('na-'+el.dataset.nb)?.classList.toggle('open');});
   });
-  document.querySelectorAll('[data-ns]').forEach(el=>{
-    el.addEventListener('change',()=>{ // Pakai 'change' agar tidak nge-spam API tiap ketik 1 huruf
-      const t=S.tasks.find(x=>x.id===+el.dataset.ns);
-      t.note=el.value;
-      simpanKeSheets('task', t.id, { note: t.note }); // <-- Mengirim isi catatan
+
+  // Fungsi BARU: Tombol Simpan Catatan
+  document.querySelectorAll('[data-save-note]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = +btn.dataset.saveNote;
+      const t = S.tasks.find(x => x.id === id);
+      const textarea = document.getElementById('ta-' + id);
+      
+      // Ambil teks dari dalam kotak
+      t.note = textarea.value;
+
+      // Ubah teks tombol sementara agar kamu tahu proses sedang berjalan
+      const originalText = btn.textContent;
+      btn.textContent = 'Menyimpan...';
+      
+      // Kirim ke Google Sheets
+      simpanKeSheets('task', t.id, { note: t.note });
+      
+      // Kembalikan teks tombol setelah jeda sebentar
+      setTimeout(() => {
+        btn.textContent = '✓ Tersimpan';
+        btn.style.background = 'var(--ok-b)';
+        btn.style.color = 'var(--ok)';
+        btn.style.borderColor = 'var(--ok)';
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style = "font-size: 11px; padding: 6px 12px; border-radius: 6px;";
+        }, 2000);
+      }, 600);
     });
   });
 }
