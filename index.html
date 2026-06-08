@@ -409,7 +409,7 @@ const PROMPTS=[
 ];
 
 // Masukkan URL Web App kamu di bawah ini (pastikan ada /exec di belakangnya)
-const API_URL = 'https://script.google.com/macros/s/AKfycbx37Xu9HH68OITDR1KpSZuSC6YcfoI7f7XlX6-MQuWFFNj4RtQ5iuGDlO3qML_HmNz2/exec'; 
+const API_URL = 'https://script.google.com/macros/s/AKfycbxGzvX02xIMWS27ovTQM2ygHIFoyxd0z_YH9_jARfCNcOdqLQ3yaNmZ1m1CD3wAp3UZ/exec'; 
 
 // STATE Awal
 const S={tasks:TASKS.map(t=>({...t,done:false,note:''})),readings:READINGS.map(r=>({...r,done:false})),filter:'all',search:'',rfilter:'all'};
@@ -445,9 +445,68 @@ async function loadDataDariSheets() {
 }
 
 // Fungsi untuk mengirim perubahan ke Google Sheets (berjalan di background)
+// Variabel untuk menyimpan PIN sementara agar tidak perlu input berkali-kali selama tab tidak ditutup
+let userPin = sessionStorage.getItem('thesis_pin') || '';
+
 function simpanKeSheets(tipe, id, dataPerubahan) {
-  fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: tipe, id: id, ...dataPerubahan }) })
-  .catch(e => console.log("Gagal simpan:", e));
+  // Jika PIN belum ada di memori, minta user memasukkan PIN
+  if (!userPin) {
+    userPin = prompt("🔒 Tracker Terkunci.\nMasukkan PIN Rahasia (6 digit) untuk menyimpan perubahan:");
+    
+    // Jika user klik 'Cancel' atau membiarkan kosong
+    if (!userPin) {
+      loadDataDariSheets(); // Tarik data asli untuk mereset UI (membatalkan centang/ketikan iseng)
+      return; 
+    }
+  }
+
+  // Gabungkan PIN ke dalam data yang akan dikirim ke server
+  const payload = { type: tipe, id: id, pin: userPin, ...dataPerubahan };
+
+  // Ubah tombol menjadi status loading jika ini adalah simpan catatan
+  const noteBtn = document.querySelector(`[data-save-note="${id}"]`);
+  let originalBtnText = "";
+  if (noteBtn && dataPerubahan.note !== undefined) {
+      originalBtnText = noteBtn.textContent;
+      noteBtn.textContent = 'Menyimpan...';
+  }
+
+  fetch(API_URL, { 
+    method: 'POST', 
+    body: JSON.stringify(payload),
+    headers: { "Content-Type": "text/plain;charset=utf-8" }
+  })
+  .then(res => res.json())
+  .then(responServer => {
+    if (responServer.status === 'error') {
+      // Jika PIN salah (ditolak oleh Apps Script)
+      alert("❌ " + responServer.message);
+      userPin = ''; // Reset PIN
+      sessionStorage.removeItem('thesis_pin');
+      loadDataDariSheets(); // Reset UI ke kondisi asli dari database
+      if (noteBtn) noteBtn.textContent = originalBtnText; // Kembalikan teks tombol
+    } else {
+      // Jika berhasil, simpan PIN di memori browser sementara
+      sessionStorage.setItem('thesis_pin', userPin);
+      
+      // Efek sukses pada tombol catatan
+      if (noteBtn && dataPerubahan.note !== undefined) {
+        noteBtn.textContent = '✓ Tersimpan';
+        noteBtn.style.background = 'var(--ok-b)';
+        noteBtn.style.color = 'var(--ok)';
+        noteBtn.style.borderColor = 'var(--ok)';
+        
+        setTimeout(() => {
+          renderTodo(); 
+          document.getElementById('na-'+id).classList.add('open'); 
+        }, 1000);
+      }
+    }
+  })
+  .catch(e => {
+      console.log("Gagal simpan:", e);
+      if (noteBtn) noteBtn.textContent = originalBtnText;
+  });
 }
 
 function phProg(id){const ts=S.tasks.filter(t=>t.ph===id);const d=ts.filter(t=>t.done).length;return{done:d,total:ts.length,pct:ts.length?Math.round(d/ts.length*100):0}}
