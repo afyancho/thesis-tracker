@@ -1,0 +1,618 @@
+xr<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afyan – Thesis Learning Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --bg:#f5f4f0;--surface:#faf9f7;--surface2:#fff;--surface-off:#edeae5;
+  --divider:#dcd9d4;--border:#d0cdc8;
+  --text:#1e1c17;--muted:#6e6b65;--faint:#b0ada8;--inverse:#f9f8f4;
+  --primary:#01696f;--primary-h:#0c4e54;--primary-l:#e0f0ef;--primary-m:#c8e6e5;
+  --p1:#2E7D6E;--p2:#1B6B9E;--p3:#6B4FA0;--p4:#B45309;--p5:#C2185B;
+  --p1b:#E8F5F2;--p2b:#E3F0F9;--p3b:#EDE8F6;--p4b:#FEF3E2;--p5b:#FCE4EC;
+  --ok:#2E7D4F;--ok-b:#E8F5EE;--warn:#B45309;--warn-b:#FEF3E2;--info:#1B6B9E;--info-b:#E3F0F9;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;--r-full:9999px;
+  --sh-sm:0 1px 3px rgba(30,28,23,.07);--sh-md:0 4px 16px rgba(30,28,23,.09);--sh-lg:0 12px 40px rgba(30,28,23,.12);
+  --fd:'Instrument Serif',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+  --xs:clamp(.75rem,.7rem + .25vw,.875rem);--sm:clamp(.875rem,.8rem + .35vw,1rem);
+  --base:clamp(1rem,.95rem + .25vw,1.125rem);--lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+  --xl:clamp(1.5rem,1.2rem + 1.25vw,2rem);--2xl:clamp(2rem,1.4rem + 2vw,2.75rem);
+  --s1:.25rem;--s2:.5rem;--s3:.75rem;--s4:1rem;--s5:1.25rem;--s6:1.5rem;--s8:2rem;--s10:2.5rem;--s12:3rem;--s16:4rem;
+  --tr:180ms cubic-bezier(.16,1,.3,1);
+}
+[data-theme="dark"]{
+  --bg:#141310;--surface:#1c1b18;--surface2:#222020;--surface-off:#1a1917;
+  --divider:#2a2825;--border:#36342f;
+  --text:#d8d5cf;--muted:#7a7770;--faint:#52504a;--inverse:#1c1b18;
+  --primary:#4fa8b0;--primary-h:#3d9099;--primary-l:#1e3535;--primary-m:#1a2e2e;
+  --p1:#5bbfb2;--p2:#5ba3cc;--p3:#9e7fd4;--p4:#e08936;--p5:#e86b9a;
+  --p1b:#1a2e2b;--p2b:#182333;--p3b:#201830;--p4b:#2b1f0e;--p5b:#2b1020;
+  --ok:#5bbf85;--ok-b:#112518;--warn:#e08936;--warn-b:#2b1f0e;--info:#5ba3cc;--info-b:#182333;
+  --sh-sm:0 1px 3px rgba(0,0,0,.3);--sh-md:0 4px 16px rgba(0,0,0,.4);--sh-lg:0 12px 40px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:none;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:var(--fb);font-size:var(--base);color:var(--text);background:var(--bg);transition:background var(--tr),color var(--tr)}
+img{display:block;max-width:100%}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+a,button{transition:color var(--tr),background var(--tr),box-shadow var(--tr)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:var(--r-sm)}
+.app{display:flex;flex-direction:column;min-height:100dvh}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--divider);padding:var(--s3) var(--s6);display:flex;align-items:center;justify-content:space-between;gap:var(--s4);box-shadow:var(--sh-sm)}
+.tb-logo{display:flex;align-items:center;gap:var(--s3)}
+.tb-title{font-family:var(--fd);font-size:var(--lg);font-style:italic;color:var(--primary);line-height:1.1}
+.tb-sub{font-size:var(--xs);color:var(--muted);margin-top:1px}
+.btn-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:var(--r-md);color:var(--muted)}
+.btn-icon:hover{background:var(--surface-off);color:var(--text)}
+/* LAYOUT */
+.main-layout{display:flex;flex:1}
+.sidebar{width:256px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--divider);padding:var(--s6) 0;position:sticky;top:57px;height:calc(100dvh - 57px);overflow-y:auto;display:flex;flex-direction:column}
+.content{flex:1;min-width:0;padding:var(--s8) var(--s6)}
+/* NAV */
+.nav-lbl{font-size:var(--xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:var(--s4) var(--s5) var(--s2)}
+.nav-item{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s5);color:var(--muted);font-size:var(--sm);font-weight:500;cursor:pointer;width:100%;text-align:left;background:none;border:none}
+.nav-item:hover{background:var(--surface-off);color:var(--text)}
+.nav-item.active{background:var(--primary-l);color:var(--primary)}
+.nav-icon{width:18px;height:18px;flex-shrink:0;opacity:.7}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-left:auto;font-size:11px;font-weight:700;background:var(--primary);color:#fff;padding:1px 7px;border-radius:var(--r-full)}
+.nav-pct{margin-left:auto;font-size:var(--xs);color:var(--faint);font-variant-numeric:tabular-nums}
+.sb-bottom{margin-top:auto;padding:var(--s5);border-top:1px solid var(--divider)}
+.profile{display:flex;align-items:center;gap:var(--s3)}
+.avatar{width:36px;height:36px;border-radius:var(--r-full);background:linear-gradient(135deg,var(--primary),var(--p2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:var(--sm);flex-shrink:0}
+.p-name{font-size:var(--sm);font-weight:600}
+.p-role{font-size:var(--xs);color:var(--muted)}
+/* VIEWS */
+.view{display:none;animation:fadeIn .25s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* PAGE HEADER */
+.ph{margin-bottom:var(--s8)}
+.ph-title{font-family:var(--fd);font-size:var(--2xl);font-style:italic;color:var(--text);line-height:1.15}
+.ph-sub{font-size:var(--sm);color:var(--muted);margin-top:var(--s2)}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(155px,100%),1fr));gap:var(--s4);margin-bottom:var(--s8)}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s5);box-shadow:var(--sh-sm)}
+.kpi-lbl{font-size:var(--xs);color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:var(--s2)}
+.kpi-val{font-size:var(--xl);font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;line-height:1}
+.kpi-val.acc{color:var(--primary)}
+.kpi-note{font-size:var(--xs);color:var(--faint);margin-top:var(--s1)}
+.sec-title{font-size:var(--lg);font-weight:700;color:var(--text);margin-bottom:var(--s4)}
+/* PHASE CARDS */
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(270px,100%),1fr));gap:var(--s4);margin-bottom:var(--s8)}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s5);box-shadow:var(--sh-sm);cursor:pointer;transition:box-shadow var(--tr),transform var(--tr)}
+.phase-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.pc-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--s3)}
+.pc-chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-full)}
+.pc-pct{font-size:var(--sm);font-weight:700;font-variant-numeric:tabular-nums}
+.pc-name{font-weight:700;font-size:var(--sm);margin-bottom:var(--s1)}
+.pc-week{font-size:var(--xs);color:var(--muted);margin-bottom:var(--s3)}
+.pb{height:6px;background:var(--surface-off);border-radius:var(--r-full);overflow:hidden}
+.pb-fill{height:100%;border-radius:var(--r-full);transition:width .6s cubic-bezier(.16,1,.3,1)}
+.pc-count{font-size:var(--xs);color:var(--muted);margin-top:var(--s2)}
+/* FILTERS */
+.filter-bar{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s6);flex-wrap:wrap}
+.f-btn{font-size:var(--sm);font-weight:500;padding:var(--s2) var(--s4);border-radius:var(--r-full);border:1.5px solid var(--border);color:var(--muted);background:var(--surface)}
+.f-btn:hover{border-color:var(--primary);color:var(--primary)}
+.f-btn.active{border-color:var(--primary);background:var(--primary-l);color:var(--primary);font-weight:600}
+.search{flex:1;min-width:160px;max-width:300px;padding:var(--s2) var(--s4);border-radius:var(--r-full);border:1.5px solid var(--border);background:var(--surface2);font-size:var(--sm);color:var(--text);outline:none;font-family:var(--fb)}
+.search:focus{border-color:var(--primary)}
+.search::placeholder{color:var(--faint)}
+/* TODO */
+.phase-sec{margin-bottom:var(--s8)}
+.psh{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s4);padding:var(--s4) var(--s5);border-radius:var(--r-lg)}
+.psh-icon{font-size:1.2em}
+.psh-title{font-weight:700;font-size:var(--base);flex:1}
+.psh-prog{font-size:var(--sm);font-weight:600;font-variant-numeric:tabular-nums}
+.task-list{display:flex;flex-direction:column;gap:var(--s3)}
+.task-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:var(--s4) var(--s5);display:flex;align-items:flex-start;gap:var(--s4);transition:box-shadow var(--tr),border-color var(--tr)}
+.task-card:hover{box-shadow:var(--sh-sm);border-color:var(--primary)}
+.task-card.done{opacity:.6}
+.chk{width:22px;height:22px;flex-shrink:0;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:1px;transition:background var(--tr),border-color var(--tr);min-width:22px}
+.chk:hover{border-color:var(--primary)}
+.chk.checked{background:var(--primary);border-color:var(--primary)}
+.chk.checked svg{display:block}
+.chk svg{display:none;width:13px;height:13px;stroke:#fff;stroke-width:2.5;fill:none}
+.t-body{flex:1;min-width:0}
+.t-title{font-weight:600;font-size:var(--sm);margin-bottom:var(--s1)}
+.done .t-title{text-decoration:line-through;color:var(--muted)}
+.t-desc{font-size:var(--xs);color:var(--muted);line-height:1.5;margin-bottom:var(--s2)}
+.t-meta{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap}
+.t-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--r-full)}
+.t-dur{font-size:var(--xs);color:var(--faint);display:flex;align-items:center;gap:3px}
+.t-note-btn{margin-left:auto;font-size:var(--xs);color:var(--primary);font-weight:600;flex-shrink:0;padding:2px 8px;border-radius:var(--r-sm)}
+.t-note-btn:hover{background:var(--primary-l)}
+.note-area{margin-top:var(--s3);display:none}
+.note-area.open{display:block}
+.note-inp{width:100%;padding:var(--s3);border-radius:var(--r-md);border:1.5px solid var(--border);background:var(--bg);font-size:var(--xs);color:var(--text);font-family:var(--fb);resize:vertical;min-height:64px;outline:none;transition:border-color var(--tr)}
+.note-inp:focus{border-color:var(--primary)}
+/* READING */
+.rdg-grid{display:flex;flex-direction:column;gap:var(--s3)}
+.rdg-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:var(--s4) var(--s5);display:flex;align-items:center;gap:var(--s4);transition:box-shadow var(--tr)}
+.rdg-card:hover{box-shadow:var(--sh-sm)}
+.rdg-num{font-size:var(--sm);font-weight:800;color:var(--faint);font-variant-numeric:tabular-nums;width:28px;flex-shrink:0;text-align:center}
+.rdg-body{flex:1;min-width:0}
+.rdg-title{font-weight:600;font-size:var(--sm);margin-bottom:3px}
+.rdg-author{font-size:var(--xs);color:var(--muted)}
+.rdg-dot{width:10px;height:10px;border-radius:var(--r-full);flex-shrink:0}
+.rdg-btn{font-size:var(--xs);font-weight:600;padding:var(--s2) var(--s3);border-radius:var(--r-md);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;flex-shrink:0;transition:all var(--tr);white-space:nowrap}
+.rdg-btn.done{background:var(--ok-b);border-color:var(--ok);color:var(--ok)}
+.rdg-btn:not(.done):hover{border-color:var(--primary);color:var(--primary)}
+/* SCHEDULE */
+.wk-grid{display:flex;flex-direction:column;gap:var(--s4)}
+.wk-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm)}
+.wk-hd{display:flex;align-items:center;justify-content:space-between;padding:var(--s4) var(--s5);background:var(--surface-off);border-bottom:1px solid var(--divider);cursor:pointer}
+.wk-title{font-weight:700;font-size:var(--sm)}
+.wk-ms{font-size:var(--xs);color:var(--muted)}
+.wk-tog{color:var(--faint);transition:transform var(--tr)}
+.wk-tog.open{transform:rotate(180deg)}
+.wk-body{padding:var(--s4) var(--s5);display:none}
+.wk-body.open{display:block}
+.day-row{display:flex;gap:var(--s4);padding:var(--s3) 0;border-bottom:1px solid var(--divider)}
+.day-row:last-of-type{border-bottom:none}
+.day-lbl{font-size:var(--xs);font-weight:700;color:var(--muted);width:80px;flex-shrink:0;padding-top:2px}
+.day-cnt{font-size:var(--xs);color:var(--muted);line-height:1.6}
+.wk-ms-badge{margin-top:var(--s3);display:inline-flex;align-items:center;gap:var(--s2);background:var(--primary-l);color:var(--primary);font-size:var(--xs);font-weight:600;padding:var(--s2) var(--s3);border-radius:var(--r-md)}
+/* PROMPTS */
+.pr-grid{display:flex;flex-direction:column;gap:var(--s4)}
+.pr-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm)}
+.pr-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:var(--s4) var(--s5);gap:var(--s4)}
+.pr-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:var(--s1)}
+.pr-title{font-weight:700;font-size:var(--sm)}
+.pr-tool{font-size:var(--xs);color:var(--muted);margin-top:2px}
+.copy-btn{font-size:var(--xs);font-weight:600;padding:var(--s2) var(--s3);border-radius:var(--r-md);background:var(--primary-l);color:var(--primary);flex-shrink:0;border:1px solid transparent}
+.copy-btn:hover{background:var(--primary);color:#fff}
+.copy-btn.copied{background:var(--ok-b);color:var(--ok)}
+.pr-text{padding:0 var(--s5) var(--s5);font-size:var(--xs);color:var(--muted);line-height:1.7;border-top:1px solid var(--divider);padding-top:var(--s4);font-style:italic;max-height:130px;overflow-y:auto}
+/* MOBILE NAV */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-top:1px solid var(--divider);padding:var(--s2) 0 max(var(--s2),env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+.mob-nav-inner{display:flex;justify-content:space-around}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--s2) var(--s3);border-radius:var(--r-md);color:var(--faint);font-size:10px;font-weight:600;min-width:56px;min-height:44px}
+.mob-btn svg{width:22px;height:22px}
+.mob-btn.active{color:var(--primary)}
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--s16) var(--s8);color:var(--muted)}
+.empty-icon{width:48px;height:48px;margin-bottom:var(--s4);color:var(--faint)}
+.empty h3{font-size:var(--base);font-weight:600;color:var(--text);margin-bottom:var(--s2)}
+.empty p{font-size:var(--sm);max-width:36ch}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--r-full)}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .content{padding:var(--s5) var(--s4);padding-bottom:90px}
+  .mob-nav{display:block}
+  .topbar{padding:var(--s3) var(--s4)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .phase-grid{grid-template-columns:1fr}
+  .tb-sub{display:none}
+}
+@media(max-width:480px){
+  .filter-bar{gap:var(--s2)}
+  .f-btn{font-size:12px;padding:var(--s2) var(--s3)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="tb-logo">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Logo">
+      <rect width="32" height="32" rx="8" fill="var(--primary)"/>
+      <rect x="7" y="8" width="13" height="2.5" rx="1.25" fill="white" opacity=".9"/>
+      <rect x="7" y="13" width="9" height="2.5" rx="1.25" fill="white" opacity=".65"/>
+      <rect x="7" y="18" width="11" height="2.5" rx="1.25" fill="white" opacity=".45"/>
+      <circle cx="24" cy="22" r="5" fill="#4fa8b0"/>
+      <path d="M21.5 22l2 2 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <div class="tb-title">Thesis Tracker</div>
+      <div class="tb-sub">Afyan Cholil Asy'ari · S2 Ekonomi Syariah Tazkia</div>
+    </div>
+  </div>
+  <button class="btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+<div class="main-layout">
+<nav class="sidebar">
+  <div class="nav-lbl">Menu</div>
+  <button class="nav-item active" data-view="dashboard">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard<span class="nav-pct" id="np-all">0%</span>
+  </button>
+  <button class="nav-item" data-view="todo">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    To-Do List<span class="nav-badge" id="np-badge">50</span>
+  </button>
+  <button class="nav-item" data-view="reading">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Bacaan Wajib
+  </button>
+  <button class="nav-item" data-view="schedule">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Jadwal 10 Minggu
+  </button>
+  <button class="nav-item" data-view="prompts">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    AI Prompt Library
+  </button>
+  <div class="sb-bottom">
+    <div class="profile">
+      <div class="avatar">A</div>
+      <div><div class="p-name">Afyan Cholil</div><div class="p-role">Bimbingan Dr. Rifki Ismal</div></div>
+    </div>
+  </div>
+</nav>
+<main class="content">
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+  <div class="ph"><h1 class="ph-title">Learning Roadmap</h1><p class="ph-sub">Pantau progress 10 minggu menuju proposal thesis bersama Dr. Rifki Ismal, Ph.D.</p></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-lbl">Total Task</div><div class="kpi-val" id="kpi-total">50</div><div class="kpi-note">5 fase pembelajaran</div></div>
+    <div class="kpi"><div class="kpi-lbl">Selesai</div><div class="kpi-val acc" id="kpi-done">0</div><div class="kpi-note">task dikerjakan</div></div>
+    <div class="kpi"><div class="kpi-lbl">Progress</div><div class="kpi-val acc" id="kpi-pct">0%</div><div class="kpi-note">keseluruhan</div></div>
+    <div class="kpi"><div class="kpi-lbl">Target</div><div class="kpi-val">Mg 10</div><div class="kpi-note">Email proposal ke Dr. Rifki</div></div>
+  </div>
+  <h2 class="sec-title">Progress per Fase</h2>
+  <div class="phase-grid" id="phase-grid"></div>
+</div>
+<!-- TODO -->
+<div class="view" id="view-todo">
+  <div class="ph"><h1 class="ph-title">To-Do List</h1><p class="ph-sub">50 task di 5 fase. Centang untuk selesai, ketuk 📝 untuk catatan.</p></div>
+  <div class="filter-bar">
+    <button class="f-btn active" data-filter="all">Semua</button>
+    <button class="f-btn" data-filter="belum">Belum</button>
+    <button class="f-btn" data-filter="done">Selesai</button>
+    <input class="search" type="search" placeholder="Cari task..." id="search-inp">
+  </div>
+  <div id="todo-cont"></div>
+</div>
+<!-- READING -->
+<div class="view" id="view-reading">
+  <div class="ph"><h1 class="ph-title">Bacaan Wajib</h1><p class="ph-sub">20 referensi prioritas. Tandai selesai satu per satu.</p></div>
+  <div class="filter-bar" id="rdg-filter"></div>
+  <div class="rdg-grid" id="rdg-list"></div>
+</div>
+<!-- SCHEDULE -->
+<div class="view" id="view-schedule">
+  <div class="ph"><h1 class="ph-title">Jadwal 10 Minggu</h1><p class="ph-sub">Tap header minggu untuk expand/collapse.</p></div>
+  <div class="wk-grid" id="wk-grid"></div>
+</div>
+<!-- PROMPTS -->
+<div class="view" id="view-prompts">
+  <div class="ph"><h1 class="ph-title">AI Prompt Library</h1><p class="ph-sub">10 prompt siap pakai. Salin dan paste ke AI favoritmu.</p></div>
+  <div class="pr-grid" id="pr-grid"></div>
+</div>
+</main>
+</div>
+<!-- MOBILE NAV -->
+<nav class="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-btn active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Beranda</button>
+    <button class="mob-btn" data-view="todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tasks</button>
+    <button class="mob-btn" data-view="reading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Bacaan</button>
+    <button class="mob-btn" data-view="schedule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Jadwal</button>
+    <button class="mob-btn" data-view="prompts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Prompts</button>
+  </div>
+</nav>
+</div>
+<script>
+const PHASES=[
+  {id:1,name:'Fondasi Konsep',week:'Minggu 1–2',color:'var(--p1)',bg:'var(--p1b)',icon:'📚',focus:'Monetary Policy, Transmisi, BI Rate'},
+  {id:2,name:'Islamic Finance Deep Dive',week:'Minggu 3–4',color:'var(--p2)',bg:'var(--p2b)',icon:'🕌',focus:'SBIS, CWLS, Sukuk, Perbankan Syariah'},
+  {id:3,name:'Riset & Literatur',week:'Minggu 5–6',color:'var(--p3)',bg:'var(--p3b)',icon:'🔍',focus:'Paper Dr. Rifki, NotebookLM, Gap Hunt'},
+  {id:4,name:'Metode Kuantitatif',week:'Minggu 7–8',color:'var(--p4)',bg:'var(--p4b)',icon:'📊',focus:'VECM, ARDL, VAR, EViews/Python'},
+  {id:5,name:'Proposal & Resonansi',week:'Minggu 9–10',color:'var(--p5)',bg:'var(--p5b)',icon:'🎯',focus:'Draft Proposal, Simulasi Dialog'}
+];
+const TASKS=[
+  {id:1,ph:1,title:'Baca Laporan Kebijakan Moneter BI terbaru',desc:'Download LKM Q1 2025 dari bi.go.id. Fokus pada bab transmisi kebijakan moneter dan kondisi perbankan syariah.',dur:'3 jam',tags:['BI','Moneter']},
+  {id:2,ph:1,title:'Pelajari konsep dual banking system Indonesia',desc:'Pahami perbedaan operasional bank konvensional vs syariah, struktur neraca, dan instrumen kebijakan BI.',dur:'2 jam',tags:['Syariah','Konsep']},
+  {id:3,ph:1,title:'Baca chapter "Islamic Monetary Economics" dari IFSB',desc:'Download IFSB Working Paper tentang Islamic monetary policy framework. Fokus pada prinsip dasar dan instrumen.',dur:'3 jam',tags:['IFSB','Moneter']},
+  {id:4,ph:1,title:'Kuasai mekanisme transmisi moneter 4 saluran',desc:'Pelajari saluran suku bunga, kredit, aset, dan ekspektasi. Catat perbedaannya dalam konteks syariah.',dur:'2.5 jam',tags:['Teori','Moneter']},
+  {id:5,ph:1,title:'Pahami instrumen SBIS, FASBIS, dan PUAS',desc:'Baca peraturan BI tentang operasional SBIS dan PUAS. Ini instrumen khas Pak Rifki — wajib dikuasai.',dur:'2 jam',tags:['BI','Instrumen']},
+  {id:6,ph:1,title:'Baca LEKSI (Laporan Ekonomi Keuangan Syariah) BI 2024',desc:'Download dari bi.go.id. Catat 3–5 highlight kondisi perbankan syariah dan tantangan regulasi.',dur:'2 jam',tags:['BI','Syariah']},
+  {id:7,ph:1,title:'Pelajari konsep makroprudensial dasar',desc:'Baca definisi, tujuan, dan instrumen makroprudensial (LTV, GWM, CCB). Bedakan dengan kebijakan moneter biasa.',dur:'2 jam',tags:['Makropru','Konsep']},
+  {id:8,ph:1,title:'Tonton lecture series "Islamic Finance" Oxford Centre',desc:'Cari di YouTube: Oxford Centre for Islamic Studies. Pilih 2–3 video tentang Islamic monetary economics.',dur:'3 jam',tags:['Video','Syariah']},
+  {id:9,ph:1,title:'Buat mind map topik keahlian Dr. Rifki Ismal',desc:'Buat visual yang menghubungkan semua topik beliau: moneter syariah, makroprudensial, CWLS, perbankan syariah.',dur:'1.5 jam',tags:['Peta Konsep']},
+  {id:10,ph:1,title:'Tulis catatan refleksi: topik thesis mana yang paling menarik?',desc:'Rank 5 topik thesis dari yang paling ke kurang menarik. Tulis alasannya. Ini bahan diskusi proposal.',dur:'1 jam',tags:['Refleksi']},
+  {id:11,ph:2,title:'Baca paper "CWLS Optimal Design" Dr. Rifki (2022)',desc:'Paper: "Identifying the optimal cash waqaf linked sukuk: Indonesian experience". Ini signature paper beliau.',dur:'3 jam',tags:['CWLS','Dr. Rifki']},
+  {id:12,ph:2,title:'Pahami mekanisme teknis Cash Waqaf Linked Sukuk',desc:'Pelajari struktur CWLS: akad, alur dana, peran BI, BAZNAS, dan nazhir. Gambar diagram alur sendiri.',dur:'2 jam',tags:['CWLS','Syariah']},
+  {id:13,ph:2,title:'Baca paper "Islamic Bank Stability" Dr. Rifki',desc:'Cari paper Rifki Ismal tentang stabilitas perbankan syariah Indonesia (2010–2015). Catat variabel, metode, temuan.',dur:'2.5 jam',tags:['Perbankan','Dr. Rifki']},
+  {id:14,ph:2,title:'Kuasai struktur sukuk sovereign Indonesia',desc:'Pelajari jenis sukuk BI/pemerintah: SBSN, sukuk ritel, SDHI, Green Sukuk. Pahami perbedaan dan peruntukannya.',dur:'2 jam',tags:['Sukuk','Instrumen']},
+  {id:15,ph:2,title:'Baca artikel IsDB Prize 2023 tentang CWLS',desc:'Cari siaran pers IsDB tentang penghargaan CWLS Indonesia 2023. Pahami mengapa inovasi ini dianggap impactful global.',dur:'1 jam',tags:['CWLS','Award']},
+  {id:16,ph:2,title:'Pelajari konsep zakat, infaq, shadaqah, wakaf produktif',desc:'Baca bab Islamic social finance dari buku teks standar. Fokus pada integrasi dengan sektor keuangan formal.',dur:'2 jam',tags:['ZISWAF','Syariah']},
+  {id:17,ph:2,title:'Analisis data OJK: perkembangan perbankan syariah 5 tahun',desc:'Download Statistik Perbankan Syariah OJK. Buat tabel: aset, DPK, pembiayaan, NPF, ROA dari 2020–2024.',dur:'2.5 jam',tags:['Data','OJK']},
+  {id:18,ph:2,title:'Baca paper "Central Bank Islamic Monetary Instruments" Dr. Rifki (2011)',desc:'Ini paper teori fundamental beliau. Catat 3 kontribusi utama paper ini ke literatur Islamic monetary economics.',dur:'3 jam',tags:['Moneter','Dr. Rifki']},
+  {id:19,ph:2,title:'Pahami konsep maqasid syariah dalam kebijakan bank sentral',desc:'Baca 1–2 artikel yang menggunakan maqasid syariah sebagai kerangka kebijakan. Catat 5 indikator relevan.',dur:'2 jam',tags:['Maqasid','Teori']},
+  {id:20,ph:2,title:'Buat glossary: 30 istilah kunci Islamic monetary economics',desc:'Buat kamus pribadi 30 istilah: dari SBIS, FASBIS, PUAS, NPF, FDR, CWLS, SBSN, dll. Dengan definisi dan contoh.',dur:'2 jam',tags:['Kosakata','Tools']},
+  {id:21,ph:3,title:'Mapping semua paper Dr. Rifki dengan VOSviewer',desc:'Download semua paper Rifki Ismal dari Google Scholar. Import ke Mendeley, buat bibliometric map di VOSviewer.',dur:'3 jam',tags:['Bibliometrik','Tools']},
+  {id:22,ph:3,title:'Baca 5 paper tertinggi sitasi Dr. Rifki secara detail',desc:'Identifikasi 5 paper beliau paling banyak dikutip. Buat ringkasan 1 halaman per paper.',dur:'4 jam',tags:['Literatur','Dr. Rifki']},
+  {id:23,ph:3,title:'Upload semua paper Dr. Rifki ke NotebookLM',desc:'Buat notebook di NotebookLM dengan semua paper Dr. Rifki. Tanya: "Apa research gap yang tersisa?"',dur:'2 jam',tags:['NotebookLM','Tools']},
+  {id:24,ph:3,title:'Lakukan systematic literature review topik pilihan',desc:'Pilih 1 topik thesis terkuat. Buat protokol SLR: kata kunci, database (Scopus, WoS), kriteria inklusi. Target: 30 paper.',dur:'4 jam',tags:['SLR','Riset']},
+  {id:25,ph:3,title:'Identifikasi 3 research gap yang spesifik',desc:'Dari SLR, temukan 3 celah penelitian yang belum dijawab. Masing-masing gap ungkapkan dalam 1–2 kalimat jelas.',dur:'2 jam',tags:['Gap','Riset']},
+  {id:26,ph:3,title:'Baca 5 thesis S2/S3 INCEIF atau Durham dengan topik serupa',desc:'Cari thesis di INCEIF Research Repository. Dr. Rifki adalah Adjunct Prof INCEIF — gaya penulisan di sana adalah referensi.',dur:'3 jam',tags:['Thesis','INCEIF']},
+  {id:27,ph:3,title:'Baca JIMF (Journal of Islamic Monetary Economics and Finance)',desc:'Akses jimf.bi.go.id. Baca 5 artikel terbaru (2023–2025). Ini jurnal resmi BI yang mencerminkan selera riset Pak Rifki.',dur:'2 jam',tags:['JIMF','BI']},
+  {id:28,ph:3,title:'Draft rumusan masalah thesis (3 versi)',desc:'Tulis 3 versi rumusan masalah untuk topik pilihanmu — dari yang paling luas ke yang paling spesifik.',dur:'2 jam',tags:['Draft','Proposal']},
+  {id:29,ph:3,title:'Verifikasi ketersediaan data untuk topik pilihan',desc:'Cek: apakah data yang dibutuhkan tersedia di BI, OJK, atau BPS? Berapa rentang waktunya? Apakah frekuensinya memadai?',dur:'1.5 jam',tags:['Data','Verifikasi']},
+  {id:30,ph:3,title:'Tulis draft 1 halaman "Research Proposal Awal"',desc:'Tuliskan: latar belakang, rumusan masalah, tujuan, dan manfaat. Ini latihan menulis sebelum ketemu Pak Rifki.',dur:'2.5 jam',tags:['Draft','Proposal']},
+  {id:31,ph:4,title:'Install dan setup EViews (trial/student version)',desc:'Download EViews 12/13 student version. Pelajari antarmuka: import data, deskriptif statistik, unit root test.',dur:'2 jam',tags:['EViews','Software']},
+  {id:32,ph:4,title:'Kuasai uji stasioneritas: ADF dan PP Test',desc:'Pelajari konsep unit root, order of integration I(0) vs I(1). Praktik di EViews dengan data GDP atau inflasi.',dur:'2.5 jam',tags:['Ekonometrika','Stasioneritas']},
+  {id:33,ph:4,title:'Pelajari Granger Causality Test',desc:'Pahami konsep kausalitas Granger. Praktik interpretasi: apakah X menyebabkan Y, atau sebaliknya, atau bidirectional?',dur:'2 jam',tags:['Ekonometrika','Kausalitas']},
+  {id:34,ph:4,title:'Kuasai ARDL Bound Testing',desc:'Pelajari ARDL (Auto-Regressive Distributed Lag). Ini metode paling sering digunakan Dr. Rifki untuk analisis jangka panjang.',dur:'3 jam',tags:['ARDL','Ekonometrika']},
+  {id:35,ph:4,title:'Belajar VECM (Vector Error Correction Model)',desc:'Pelajari konsep kointegrasi, ECM, dan VECM. Pahami perbedaan VAR vs VECM. Praktik dengan data perbankan syariah.',dur:'3 jam',tags:['VECM','Ekonometrika']},
+  {id:36,ph:4,title:'Praktik Impulse Response Function (IRF) dan FEVD',desc:'Setelah VECM, pelajari IRF untuk melihat respons shock. FEVD untuk dekomposisi variance.',dur:'2.5 jam',tags:['IRF','FEVD']},
+  {id:37,ph:4,title:'Install Python dan library ML (scikit-learn, XGBoost)',desc:'Setup Python environment. Install: pandas, numpy, scikit-learn, xgboost, shap, matplotlib.',dur:'2 jam',tags:['Python','ML']},
+  {id:38,ph:4,title:'Pelajari Random Forest dan XGBoost untuk data ekonomi',desc:'Cari tutorial: "Machine learning for macroeconomic forecasting". Latih model sederhana dengan data inflasi.',dur:'3 jam',tags:['ML','Random Forest']},
+  {id:39,ph:4,title:'Pahami SHAP Values untuk interpretasi model ML',desc:'SHAP adalah kunci membuat ML "terbuka". Pelajari SHAP values, plot summary_plot dan force_plot.',dur:'2 jam',tags:['SHAP','ML']},
+  {id:40,ph:4,title:'Replikasi 1 paper econometrics Dr. Rifki menggunakan EViews',desc:'Pilih 1 paper beliau yang ada datanya. Coba replikasi hasil ARDL atau VECM-nya.',dur:'4 jam',tags:['Replikasi','EViews']},
+  {id:41,ph:5,title:'Tulis draft lengkap Bab 1: Latar Belakang dan Rumusan Masalah',desc:'Tulis 5–7 halaman. Mulai dari kondisi makro → isu keuangan syariah → gap → rumusan masalah → tujuan → manfaat.',dur:'4 jam',tags:['Draft','Bab 1']},
+  {id:42,ph:5,title:'Tulis draft Bab 2: Tinjauan Pustaka',desc:'Susun 8–12 halaman. Struktur: teori dasar → literatur empiris → posisi penelitianmu (novelty).',dur:'5 jam',tags:['Draft','Bab 2']},
+  {id:43,ph:5,title:'Tulis draft Bab 3: Metode Penelitian',desc:'Tulis 4–6 halaman. Cantumkan: jenis penelitian, data dan sumber, variabel, spesifikasi model, prosedur estimasi.',dur:'3 jam',tags:['Draft','Bab 3']},
+  {id:44,ph:5,title:'Buat presentasi proposal 15 menit (slide)',desc:'Buat 12–15 slide: masalah, gap, tujuan, kerangka teori, metodologi, novelty, kontribusi.',dur:'3 jam',tags:['Presentasi','Proposal']},
+  {id:45,ph:5,title:'Simulasi tanya jawab dengan AI sebagai Dr. Rifki Ismal',desc:'Pakai prompt dari AI Prompt Library. Simulasikan presentasi proposal ke "Dr. Rifki". Catat semua pertanyaan.',dur:'2 jam',tags:['Simulasi','AI']},
+  {id:46,ph:5,title:'Revisi proposal berdasarkan feedback simulasi',desc:'Perbaiki kelemahan dari simulasi. Fokus pada: kejelasan gap, justifikasi metode, dan relevansi kebijakan.',dur:'3 jam',tags:['Revisi','Proposal']},
+  {id:47,ph:5,title:'Baca kembali semua paper Dr. Rifki & buat "conversation starters"',desc:'Siapkan 5 poin untuk memulai diskusi natural dengan Pak Rifki: referensi paper beliau, pertanyaan spesifik.',dur:'2 jam',tags:['Persiapan','Dialog']},
+  {id:48,ph:5,title:'Tulis policy brief 1 halaman dari proposal',desc:'Ringkas proposalmu dalam 1 halaman format policy brief: masalah, temuan yang diharapkan, rekomendasi untuk BI/OJK.',dur:'1.5 jam',tags:['Policy Brief','Output']},
+  {id:49,ph:5,title:'Minta feedback proposal ke teman atau senior Tazkia',desc:'Presentasikan draft ke minimal 1 orang yang bisa memberi kritik konstruktif. Catat semua masukan.',dur:'2 jam',tags:['Peer Review','Feedback']},
+  {id:50,ph:5,title:'Kirim email ke Dr. Rifki Ismal untuk konsultasi proposal',desc:'Tulis email profesional: perkenalkan diri, sebutkan mata kuliah, jelaskan topik, lampirkan 1-pager, minta waktu diskusi.',dur:'1 jam',tags:['Email','Final']}
+];
+const READINGS=[
+  {id:1,title:'Central bank Islamic monetary instruments: a theoretical approach',author:'Rifki Ismal (2011) · Humanomics',type:'rifki'},
+  {id:2,title:'Identifying the optimal cash waqaf linked sukuk: Indonesian experience',author:'Rifki Ismal et al. (2022) · JIMF',type:'rifki'},
+  {id:3,title:'Monetary Policy and Islamic Bank Stability in Indonesia',author:'Rifki Ismal (2015) · Bank Indonesia',type:'rifki'},
+  {id:4,title:'Islamic Monetary Economics: Finance and Banking in Contemporary Muslim Economies',author:'Rifki Ismal (2013) · Palgrave Macmillan',type:'rifki'},
+  {id:5,title:'The Indonesian Islamic Banking: Theory and Practices',author:'Rifki Ismal (2011) · Gramata Publishing',type:'rifki'},
+  {id:6,title:'IFSB Working Paper: Islamic Monetary Policy Instruments',author:'IFSB (2020) · ifsb.org',type:'ifsb'},
+  {id:7,title:'IFSB Guidance Note on Macroprudential Frameworks for Islamic Finance',author:'IFSB (2021) · ifsb.org',type:'ifsb'},
+  {id:8,title:'Laporan Ekonomi Keuangan Syariah (LEKSI) 2024',author:'Bank Indonesia (2024) · bi.go.id',type:'bi'},
+  {id:9,title:'Financial Stability Review BI – Kondisi Perbankan Syariah',author:'Bank Indonesia (2024) · bi.go.id',type:'bi'},
+  {id:10,title:'Monetary transmission mechanism in dual banking system',author:'Ramadhani & Siregar (2022) · JIMF Vol.8',type:'empiris'},
+  {id:11,title:'Macroprudential policy and Islamic banking stability',author:'Kabir et al. (2023) · Journal of Islamic Finance',type:'empiris'},
+  {id:12,title:'The effectiveness of SBIS in monetary transmission',author:'Utomo & Prasetyo (2021) · Bulletin BI',type:'empiris'},
+  {id:13,title:'ARDL approach to Islamic banking and economic growth',author:'Hassan & Bashir (2022) · Islamic Economic Studies',type:'empiris'},
+  {id:14,title:'Cash Waqaf Linked Sukuk: Social Finance Innovation',author:'Haneef et al. (2023) · INCEIF Working Paper',type:'empiris'},
+  {id:15,title:'Machine Learning for Macroeconomic Forecasting',author:'Coulombe et al. (2022) · Journal of Applied Econometrics',type:'ml'},
+  {id:16,title:'SHAP values for economic policy interpretation',author:'Lundberg & Lee (2021) · NeurIPS',type:'ml'},
+  {id:17,title:'XGBoost for financial stability prediction in banking',author:'Tanaka et al. (2023) · Finance Research Letters',type:'ml'},
+  {id:18,title:'Introduction to Econometrics (Time Series Methods)',author:'Stock & Watson (2020) · Pearson 4th Ed.',type:'metode'},
+  {id:19,title:'Applied Econometric Time Series – Enders',author:'Walter Enders (2014) · Wiley 4th Ed.',type:'metode'},
+  {id:20,title:'Research Methods in Islamic Finance – Panduan SLR',author:'Mohd Nor et al. (2021) · ISRA Research Paper',type:'metode'},
+];
+const RTYPE={rifki:{label:'Paper Dr. Rifki',c:'#B45309'},bi:{label:'Dokumen BI',c:'#1B6B9E'},ifsb:{label:'IFSB',c:'#1B6B9E'},empiris:{label:'Jurnal Empiris',c:'#2E7D4F'},ml:{label:'ML / Data Science',c:'#6B4FA0'},metode:{label:'Metodologi',c:'#555'}};
+const SCHEDULE=[
+  {title:'Minggu 1–2: Fondasi Konsep',ms:'Selesai: Mind map topik + catatan LKM BI',days:[{d:'Sen–Rab',c:'Baca LKM BI + LEKSI 2024. Catat 5 poin utama kondisi moneter syariah Indonesia.'},{d:'Kam–Jum',c:'Pelajari dual banking system, instrumen SBIS/PUAS/FASBIS. Buat diagram perbandingan.'},{d:'Sabtu',c:'Baca IFSB Working Paper tentang Islamic monetary policy framework.'},{d:'Minggu',c:'Buat mind map keahlian Dr. Rifki + tulis refleksi topik thesis mana yang paling menarik.'}]},
+  {title:'Minggu 3–4: Islamic Finance Deep Dive',ms:'Selesai: Glossary 30 istilah + dataset OJK perbankan syariah',days:[{d:'Sen–Rab',c:'Baca paper Dr. Rifki: CWLS (2022) dan Islamic Monetary Instruments (2011). Buat ringkasan detail.'},{d:'Kam–Jum',c:'Analisis data statistik perbankan syariah OJK 5 tahun. Buat tabel trend.'},{d:'Sabtu',c:'Pelajari maqasid syariah sebagai kerangka kebijakan bank sentral. Catat 5 indikator.'},{d:'Minggu',c:'Buat glossary 30 istilah. Review dan konsolidasi semua catatan fase ini.'}]},
+  {title:'Minggu 5–6: Riset & Literatur',ms:'Selesai: SLR 30 paper + 3 research gap teridentifikasi',days:[{d:'Sen–Rab',c:'Upload semua paper Dr. Rifki ke NotebookLM. Lakukan mapping bibliometrik di VOSviewer.'},{d:'Kam–Jum',c:'Systematic Literature Review (SLR): Scopus + Google Scholar. Kumpulkan 30 paper relevan.'},{d:'Sabtu',c:'Baca thesis dari INCEIF atau Durham University dengan topik serupa.'},{d:'Minggu',c:'Tulis 3 research gap + draft rumusan masalah 3 versi. Verifikasi ketersediaan data.'}]},
+  {title:'Minggu 7–8: Metode Kuantitatif',ms:'Selesai: Replikasi 1 paper Dr. Rifki di EViews + model ML dasar',days:[{d:'Sen–Rab',c:'Setup EViews. Latih ADF/PP test, Granger causality. Praktik dengan data BI.'},{d:'Kam–Jum',c:'Pelajari ARDL dan VECM. Ini inti metode yang digunakan Dr. Rifki — latihan intensif.'},{d:'Sabtu',c:'Replikasi 1 paper Dr. Rifki menggunakan EViews. Bandingkan hasilmu dengan paper asli.'},{d:'Minggu',c:'Setup Python + scikit-learn + XGBoost. Latih model ML sederhana. Eksplorasi SHAP values.'}]},
+  {title:'Minggu 9–10: Proposal & Resonansi',ms:'🎯 FINAL: Email proposal ke Dr. Rifki Ismal',days:[{d:'Sen–Rab',c:'Tulis draft Bab 1, 2, dan 3. Gunakan AI Prompt Library untuk bantuan penulisan.'},{d:'Kam–Jum',c:'Buat slide presentasi 12–15 slide. Simulasi tanya jawab dengan AI sebagai Dr. Rifki.'},{d:'Sabtu',c:'Revisi proposal berdasarkan simulasi. Minta feedback dari teman/senior Tazkia.'},{d:'Minggu',c:'Tulis email profesional ke Dr. Rifki. Lampirkan 1-pager proposal. Kirim! 🚀'}]},
+];
+const PROMPTS=[
+  {id:1,title:'Inisialisasi Tutor Islamic Monetary Economics',tool:'ChatGPT / Gemini / Claude',text:'Kamu adalah profesor Islamic monetary economics dan central banking. Saya mahasiswa S2 Ekonomi Syariah yang sedang mempersiapkan thesis di bawah bimbingan Dr. Rifki Ismal (Bank Indonesia / INCEIF). Tolong jelaskan [topik] dengan asumsi saya sudah paham ekonomi makro dasar tapi baru mempelajari Islamic finance secara mendalam.'},
+  {id:2,title:'Simulasi Dialog dengan Dr. Rifki Ismal',tool:'ChatGPT / Claude',text:'Perankan dirimu sebagai Dr. Rifki Ismal, Ph.D., Deputy Director Bank Indonesia dan Adjunct Professor INCEIF. Kamu ahli dalam Islamic monetary economics, monetary transmission, CWLS, dan Islamic banking stability. Saya akan mempresentasikan proposal thesis dan kamu merespons seperti beliau: kritis, mendalam, dan berbasis evidence.'},
+  {id:3,title:'Research Gap Hunter',tool:'NotebookLM / Claude',text:'Saya sudah mengumpulkan 30 paper tentang [topik]. Bantu saya mengidentifikasi: (1) Metodologi apa yang belum digunakan? (2) Variabel apa yang hilang dari literatur? (3) Konteks negara mana yang kurang terwakili? (4) Periode data terbaru mana yang belum dicover? Formatkan dalam tabel: Gap | Justifikasi | Peluang Riset.'},
+  {id:4,title:'Penguatan Rumusan Masalah',tool:'ChatGPT / Gemini',text:'Tolong evaluasi rumusan masalah thesis saya dari perspektif: (1) Kejelasan dan spesifisitas, (2) Relevansi kebijakan untuk Bank Indonesia, (3) Novelty dibanding literatur yang ada, (4) Kelayakan untuk S2. Berikan skor 1–10 dan saran perbaikan konkret. Rumusan masalah saya: [tulis di sini]'},
+  {id:5,title:'Desain Metode Hybrid Econometrics + ML',tool:'Claude / ChatGPT',text:'Saya ingin menggabungkan ARDL/VECM (ekonometrika) dengan Random Forest/XGBoost + SHAP (machine learning) untuk topik thesis saya: [judul]. Tolong bantu: (1) Desain alur metodologi yang logis, (2) Justifikasi mengapa hybrid lebih baik, (3) Antisipasi pertanyaan penguji, (4) Referensi paper yang sudah menggunakan pendekatan ini.'},
+  {id:6,title:'Penulisan Literature Review yang Kuat',tool:'Claude / Gemini',text:'Bantu saya menulis paragraf literature review yang menghubungkan tiga paper ini: [paper 1], [paper 2], [paper 3]. Tunjukkan perkembangan literatur kronologis, identifikasi persetujuan dan pertentangan, dan akhiri dengan gap yang research saya isi. Gaya penulisan akademik.'},
+  {id:7,title:'Email Profesional ke Dosen Pembimbing',tool:'ChatGPT / Gemini',text:'Bantu saya menulis email profesional dalam Bahasa Indonesia ke Dr. Rifki Ismal, Ph.D. Saya ingin mengajukan beliau sebagai dosen pembimbing thesis. Topik thesis saya: [topik]. Email harus: singkat (maks 200 kata), profesional, referensikan 1 paper beliau, dan meminta 20 menit konsultasi.'},
+  {id:8,title:'Simulasi Seminar Proposal Penuh',tool:'Claude / ChatGPT',text:'Kamu adalah panel penguji seminar proposal: (1) Dr. Rifki Ismal sebagai pembimbing utama, (2) seorang profesor metodologi kuantitatif, (3) seorang praktisi OJK. Saya akan presentasikan proposal thesis saya. Setiap anggota panel berikan pertanyaan berbeda sesuai keahlian masing-masing.'},
+  {id:9,title:'Policy Brief Generator dari Proposal Thesis',tool:'Gemini / ChatGPT',text:'Berdasarkan proposal thesis saya berikut ini, buatkan policy brief 1 halaman (400–500 kata) untuk Bank Indonesia atau OJK. Struktur: Latar belakang (2 paragraf) → Temuan yang diharapkan (3 poin) → Rekomendasi kebijakan (2–3 konkret). Proposal saya: [tempelkan draft proposal]'},
+  {id:10,title:'Interpretasi Hasil Econometrics',tool:'Claude / ChatGPT',text:'Tolong bantu saya menginterpretasikan output VECM/ARDL berikut ini dalam konteks kebijakan moneter syariah Indonesia. Jelaskan: (1) Apa makna koefisien ECT?, (2) Bagaimana membaca IRF ini?, (3) Apa implikasi ekonominya?, (4) Bagaimana menuliskan interpretasi ini dalam bab hasil? Output: [paste output]'},
+];
+
+// Masukkan URL Web App kamu di bawah ini (pastikan ada /exec di belakangnya)
+const API_URL = 'https://script.google.com/macros/s/AKfycbw2PGAHh2-9uG3iQqIN0SBFwxuolvQ_QPA-UuNC7GaCwXlRJlOCRnUG_cI0tqeE0ZPb/exec'; 
+
+// STATE Awal
+const S={tasks:TASKS.map(t=>({...t,done:false,note:''})),readings:READINGS.map(r=>({...r,done:false})),filter:'all',search:'',rfilter:'all'};
+
+// Fungsi untuk menarik data dari Google Sheets saat web dibuka
+async function loadDataDariSheets() {
+  try {
+    const res = await fetch(API_URL);
+    const db = await res.json();
+    
+    if(db.tasks) db.tasks.forEach(dt => { const t = S.tasks.find(x => x.id === dt.id); if(t) { t.done = dt.done; t.note = dt.note; }});
+    if(db.readings) db.readings.forEach(dr => { const r = S.readings.find(x => x.id === dr.id); if(r) r.done = dr.done; });
+    
+    // Refresh tampilan setelah data ditarik
+    renderDash();
+    if(document.getElementById('view-todo').classList.contains('active')) renderTodo();
+    if(document.getElementById('view-reading').classList.contains('active')) renderReading();
+  } catch(e) { console.log("Gagal tarik data:", e); }
+}
+
+// Fungsi untuk mengirim perubahan ke Google Sheets (berjalan di background)
+function simpanKeSheets(tipe, id, dataPerubahan) {
+  fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: tipe, id: id, ...dataPerubahan }) })
+  .catch(e => console.log("Gagal simpan:", e));
+}
+
+function phProg(id){const ts=S.tasks.filter(t=>t.ph===id);const d=ts.filter(t=>t.done).length;return{done:d,total:ts.length,pct:ts.length?Math.round(d/ts.length*100):0}}
+function total(){const d=S.tasks.filter(t=>t.done).length;return{done:d,total:S.tasks.length,pct:Math.round(d/S.tasks.length*100)}}
+
+function renderDash(){
+  const{done,total:tot,pct}=total();
+  document.getElementById('kpi-total').textContent=tot;
+  document.getElementById('kpi-done').textContent=done;
+  document.getElementById('kpi-pct').textContent=pct+'%';
+  document.getElementById('np-all').textContent=pct+'%';
+  document.getElementById('np-badge').textContent=tot-done;
+  document.getElementById('phase-grid').innerHTML=PHASES.map(p=>{
+    const g=phProg(p.id);
+    return`<div class="phase-card" onclick="goTo('todo',${p.id})">
+      <div class="pc-hd"><span class="pc-chip" style="background:${p.bg};color:${p.color}">${p.icon} Fase ${p.id}</span><span class="pc-pct" style="color:${p.color}">${g.pct}%</span></div>
+      <div class="pc-name">${p.name}</div><div class="pc-week">${p.week}</div>
+      <div class="pb"><div class="pb-fill" style="width:${g.pct}%;background:${p.color}"></div></div>
+      <div class="pc-count">${g.done}/${g.total} selesai · ${p.focus}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTodo(fp){
+  const q=S.search.toLowerCase();
+  let html='';
+  PHASES.forEach(p=>{
+    if(fp&&p.id!==fp)return;
+    let ts=S.tasks.filter(t=>t.ph===p.id);
+    if(S.filter==='done')ts=ts.filter(t=>t.done);
+    if(S.filter==='belum')ts=ts.filter(t=>!t.done);
+    if(q)ts=ts.filter(t=>t.title.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q));
+    if(!ts.length)return;
+    const g=phProg(p.id);
+    html+=`<div class="phase-sec">
+      <div class="psh" style="background:${p.bg}">
+        <span class="psh-icon">${p.icon}</span>
+        <span class="psh-title" style="color:${p.color}">Fase ${p.id}: ${p.name}</span>
+        <span class="psh-prog" style="color:${p.color}">${g.done}/${g.total}</span>
+      </div>
+      <div class="task-list">${ts.map(t=>rTask(t,p)).join('')}</div>
+    </div>`;
+  });
+  if(!html)html=`<div class="empty"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div><h3>Tidak ada task ditemukan</h3><p>Ubah filter atau kata kunci pencarian.</p></div>`;
+  document.getElementById('todo-cont').innerHTML=html;
+  attachTL();
+}
+function rTask(t,p){
+  const tags=t.tags.map(g=>`<span class="t-tag" style="background:${p.bg};color:${p.color}">${g}</span>`).join('');
+  return`<div class="task-card ${t.done?'done':''}" id="tc-${t.id}">
+    <div class="chk ${t.done?'checked':''}" data-chk="${t.id}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="t-body">
+      <div class="t-title">${t.title}</div>
+      <div class="t-desc">${t.desc}</div>
+      <div class="t-meta">${tags}<span class="t-dur">⏱ ${t.dur}</span><button class="t-note-btn" data-nb="${t.id}">📝 Catatan</button></div>
+      <div class="note-area ${t.note?'open':''}" id="na-${t.id}">
+        <textarea class="note-inp" placeholder="Tulis catatan atau refleksimu di sini..." data-ns="${t.id}">${t.note}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+function attachTL(){
+  document.querySelectorAll('[data-chk]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const t=S.tasks.find(x=>x.id===+el.dataset.chk);
+      t.done=!t.done;
+      renderTodo(); renderDash();
+      simpanKeSheets('task', t.id, { done: t.done }); // <-- Mengirim status centang
+    });
+  });
+  document.querySelectorAll('[data-nb]').forEach(el=>{
+    el.addEventListener('click',()=>{document.getElementById('na-'+el.dataset.nb)?.classList.toggle('open');});
+  });
+  document.querySelectorAll('[data-ns]').forEach(el=>{
+    el.addEventListener('change',()=>{ // Pakai 'change' agar tidak nge-spam API tiap ketik 1 huruf
+      const t=S.tasks.find(x=>x.id===+el.dataset.ns);
+      t.note=el.value;
+      simpanKeSheets('task', t.id, { note: t.note }); // <-- Mengirim isi catatan
+    });
+  });
+}
+
+function renderReading(){
+  const fEl=document.getElementById('rdg-filter');
+  const types=['all',...Object.keys(RTYPE)];
+  fEl.innerHTML=types.map(t=>{
+    const lbl=t==='all'?'Semua':RTYPE[t].label;
+    const d=t==='all'?S.readings.filter(r=>r.done).length:S.readings.filter(r=>r.type===t&&r.done).length;
+    const tot=t==='all'?S.readings.length:S.readings.filter(r=>r.type===t).length;
+    return`<button class="f-btn ${S.rfilter===t?'active':''}" data-rf="${t}">${lbl} <span style="opacity:.6">(${d}/${tot})</span></button>`;
+  }).join('');
+  fEl.querySelectorAll('[data-rf]').forEach(b=>{b.addEventListener('click',()=>{S.rfilter=b.dataset.rf;renderReading();});});
+  const items=S.rfilter==='all'?S.readings:S.readings.filter(r=>r.type===S.rfilter);
+  document.getElementById('rdg-list').innerHTML=items.map(r=>`<div class="rdg-card">
+    <div class="rdg-num">${String(r.id).padStart(2,'0')}</div>
+    <div class="rdg-dot" style="background:${RTYPE[r.type].c}"></div>
+    <div class="rdg-body"><div class="rdg-title">${r.title}</div><div class="rdg-author">${r.author}</div></div>
+    <button class="rdg-btn ${r.done?'done':''}" data-rd="${r.id}">${r.done?'✓ Selesai':'Tandai Selesai'}</button>
+  </div>`).join('');
+document.querySelectorAll('[data-rd]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const r=S.readings.find(x=>x.id===+b.dataset.rd);
+      r.done=!r.done;
+      renderReading();
+      simpanKeSheets('reading', r.id, { done: r.done }); // <-- Mengirim status bacaan
+    });
+  });
+}
+
+function renderSchedule(){
+  document.getElementById('wk-grid').innerHTML=SCHEDULE.map((w,i)=>`
+    <div class="wk-card">
+      <div class="wk-hd" data-wi="${i}">
+        <div><div class="wk-title">${w.title}</div><div class="wk-ms">${w.ms}</div></div>
+        <svg class="wk-tog ${i===0?'open':''}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="wk-body ${i===0?'open':''}" id="wb-${i}">
+        ${w.days.map(d=>`<div class="day-row"><div class="day-lbl">${d.d}</div><div class="day-cnt">${d.c}</div></div>`).join('')}
+        <div class="wk-ms-badge">🎯 ${w.ms}</div>
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('[data-wi]').forEach(h=>{
+    h.addEventListener('click',()=>{
+      const b=document.getElementById('wb-'+h.dataset.wi),t=h.querySelector('.wk-tog');
+      b.classList.toggle('open');t.classList.toggle('open');
+    });
+  });
+}
+
+function renderPrompts(){
+  document.getElementById('pr-grid').innerHTML=PROMPTS.map(p=>`<div class="pr-card">
+    <div class="pr-hd">
+      <div><div class="pr-lbl">Prompt #${p.id}</div><div class="pr-title">${p.title}</div><div class="pr-tool">🤖 ${p.tool}</div></div>
+      <button class="copy-btn" data-cp="${p.id}">Salin</button>
+    </div>
+    <div class="pr-text">${p.text}</div>
+  </div>`).join('');
+  document.querySelectorAll('[data-cp]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const p=PROMPTS.find(x=>x.id===+b.dataset.cp);
+      navigator.clipboard.writeText(p.text).catch(()=>{});
+      b.textContent='✓ Tersalin';b.classList.add('copied');
+      setTimeout(()=>{b.textContent='Salin';b.classList.remove('copied');},2000);
+    });
+  });
+}
+
+function goTo(v,fp){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v)?.classList.add('active');
+  document.querySelectorAll(`[data-view="${v}"]`).forEach(x=>x.classList.add('active'));
+  if(v==='dashboard')renderDash();
+  else if(v==='todo')renderTodo(fp);
+  else if(v==='reading')renderReading();
+  else if(v==='schedule')renderSchedule();
+  else if(v==='prompts')renderPrompts();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>goTo(b.dataset.view)));
+document.querySelectorAll('[data-filter]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');S.filter=b.dataset.filter;renderTodo();
+  });
+});
+document.getElementById('search-inp').addEventListener('input',e=>{S.search=e.target.value;renderTodo();});
+
+// DARK MODE
+(function(){
+  const btn=document.querySelector('[data-theme-toggle]'),html=document.documentElement;
+  let dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  html.setAttribute('data-theme',dark?'dark':'light');
+  function upd(){btn.innerHTML=dark?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'}
+  upd();
+  btn.addEventListener('click',()=>{dark=!dark;html.setAttribute('data-theme',dark?'dark':'light');upd();});
+})();
+renderDash(); // Render tampilan awal
+loadDataDariSheets(); // Tarik data real dari database
+</script>
+</body>
+</html>
