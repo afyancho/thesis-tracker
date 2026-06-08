@@ -416,6 +416,37 @@ const S={tasks:TASKS.map(t=>({...t,done:false,note:''})),readings:READINGS.map(r
 
 // Fungsi untuk menarik data dari Google Sheets saat web dibuka
 async function loadDataDariSheets() {
+  // --- 1. BUAT & TAMPILKAN LAYAR LOADING ---
+  let loader = document.getElementById('global-loader');
+  if (!loader) {
+    // Inject CSS khusus untuk layar dan animasi berputar
+    const style = document.createElement('style');
+    style.innerHTML = `
+      #global-loader {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      }
+      .spinner {
+        width: 45px; height: 45px; border: 5px solid rgba(255,255,255,0.2);
+        border-top: 5px solid #fff; border-radius: 50%;
+        animation: spin 1s linear infinite; margin-bottom: 15px;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    `;
+    document.head.appendChild(style);
+
+    // Buat elemen layar transparannya
+    loader = document.createElement('div');
+    loader.id = 'global-loader';
+    loader.innerHTML = '<div class="spinner"></div><div style="color: white; font-weight: 500; font-size: 15px; letter-spacing: 0.5px;">Menyinkronkan Data...</div>';
+    document.body.appendChild(loader);
+  }
+  
+  // Tampilkan layar loading untuk mengunci UI
+  loader.style.display = 'flex';
+  // -----------------------------------------
+
   try {
     const res = await fetch(API_URL + '?t=' + new Date().getTime());
     const db = await res.json();
@@ -435,13 +466,19 @@ async function loadDataDariSheets() {
       });
     }
     
-    // KUNCI PERBAIKAN: Paksa render ulang SEMUA bagian jika data sukses ditarik
     if(isUpdated) {
       renderDash();
       renderTodo();
       renderReading();
     }
-  } catch(e) { console.log("Gagal tarik data:", e); alert("Koneksi ke Google Sheets gagal. Tolong cek URL API atau jaringan internet."); }
+  } catch(e) { 
+    console.log("Gagal tarik data:", e); 
+    alert("Koneksi ke Google Sheets gagal. Tolong cek URL API atau jaringan internet."); 
+  } finally {
+    // --- 2. SEMBUNYIKAN LAYAR LOADING ---
+    // Blok 'finally' memastikan layar loading akan DITUTUP apa pun yang terjadi (sukses/gagal)
+    if (loader) loader.style.display = 'none';
+  }
 }
 
 // Fungsi untuk mengirim perubahan ke Google Sheets (berjalan di background)
