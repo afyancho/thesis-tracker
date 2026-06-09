@@ -416,35 +416,84 @@ const S={tasks:TASKS.map(t=>({...t,done:false,note:''})),readings:READINGS.map(r
 
 // Fungsi untuk menarik data dari Google Sheets saat web dibuka
 async function loadDataDariSheets() {
-  // --- 1. BUAT & TAMPILKAN LAYAR LOADING ---
+  // --- 1. BUAT & TAMPILKAN LAYAR LOADING RETRO ---
   let loader = document.getElementById('global-loader');
+  let pctText = null;
+  let intervalId = null;
+
   if (!loader) {
-    // Inject CSS khusus untuk layar dan animasi berputar
     const style = document.createElement('style');
     style.innerHTML = `
+      @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+      
       #global-loader {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(3px);
         z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        font-family: 'VT323', monospace; color: #00ff41;
       }
-      .spinner {
-        width: 45px; height: 45px; border: 5px solid rgba(255,255,255,0.2);
-        border-top: 5px solid #fff; border-radius: 50%;
-        animation: spin 1s linear infinite; margin-bottom: 15px;
+      .loader-container { width: 280px; }
+      .sync-text {
+        font-size: 22px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8);
+        display: flex; letter-spacing: 1px;
       }
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .sync-text::after {
+        content: ''; animation: dots 1.5s steps(5, end) infinite;
+      }
+      @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60% { content: '...'; }
+        80% { content: '....'; }
+        100% { content: '.....'; }
+      }
+      .bar-bg {
+        width: 100%; height: 16px; background: rgba(0, 255, 65, 0.1);
+        border-radius: 8px; overflow: hidden;
+        border: 1px solid rgba(0, 255, 65, 0.3);
+      }
+      .bar-fill {
+        height: 100%; background: #00ff41; border-radius: 8px;
+        box-shadow: 0 0 15px #00ff41; width: 0%;
+        transition: width 0.1s linear;
+      }
+      .pct-text {
+        text-align: right; font-size: 28px; margin-top: 4px; 
+        text-shadow: 0 0 8px rgba(0, 255, 65, 0.8); letter-spacing: 2px;
+      }
     `;
     document.head.appendChild(style);
 
-    // Buat elemen layar transparannya
     loader = document.createElement('div');
     loader.id = 'global-loader';
-    loader.innerHTML = '<div class="spinner"></div><div style="color: white; font-weight: 500; font-size: 15px; letter-spacing: 0.5px;">Menyinkronkan Data...</div>';
+    loader.innerHTML = `
+      <div class="loader-container">
+        <div class="sync-text">synchronizing</div>
+        <div class="bar-bg"><div class="bar-fill" id="load-fill"></div></div>
+        <div class="pct-text" id="load-pct">0%</div>
+      </div>
+    `;
     document.body.appendChild(loader);
   }
   
-  // Tampilkan layar loading untuk mengunci UI
   loader.style.display = 'flex';
+  
+  // Logika Animasi Angka dan Bar
+  const fillBar = document.getElementById('load-fill');
+  pctText = document.getElementById('load-pct');
+  let progress = 0;
+  fillBar.style.width = '0%';
+  pctText.innerText = '0%';
+  
+  intervalId = setInterval(() => {
+    let increment = Math.random() * 15;
+    if (progress > 80) increment = Math.random() * 3; // Melambat saat hampir selesai
+    progress += increment;
+    if (progress >= 99) progress = 99; // Tahan di 99% sampai data benar-benar masuk
+    
+    fillBar.style.width = Math.floor(progress) + '%';
+    pctText.innerText = Math.floor(progress) + '%';
+  }, 100);
   // -----------------------------------------
 
   try {
@@ -471,13 +520,20 @@ async function loadDataDariSheets() {
       renderTodo();
       renderReading();
     }
+    
+    // Tarik langsung ke 100% jika data sudah ditarik sukses
+    fillBar.style.width = '100%';
+    pctText.innerText = '100%';
+
   } catch(e) { 
     console.log("Gagal tarik data:", e); 
     alert("Koneksi ke Google Sheets gagal. Tolong cek URL API atau jaringan internet."); 
   } finally {
     // --- 2. SEMBUNYIKAN LAYAR LOADING ---
-    // Blok 'finally' memastikan layar loading akan DITUTUP apa pun yang terjadi (sukses/gagal)
-    if (loader) loader.style.display = 'none';
+    clearInterval(intervalId);
+    setTimeout(() => {
+      if (loader) loader.style.display = 'none';
+    }, 400); // Beri jeda 0.4 detik agar tulisan 100% sempat terlihat olehmu
   }
 }
 
