@@ -1,4 +1,4 @@
-xr<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -366,26 +366,32 @@ const TASKS=[
   {id:50,ph:5,title:'Kirim email ke Dr. Rifki Ismal untuk konsultasi proposal',desc:'Tulis email profesional: perkenalkan diri, sebutkan mata kuliah, jelaskan topik, lampirkan 1-pager, minta waktu diskusi.',dur:'1 jam',tags:['Email','Final']}
 ];
 const READINGS=[
-  {id:1,title:'Central bank Islamic monetary instruments: a theoretical approach',author:'Rifki Ismal (2011) · Humanomics',type:'rifki'},
-  {id:2,title:'Identifying the optimal cash waqaf linked sukuk: Indonesian experience',author:'Rifki Ismal et al. (2022) · JIMF',type:'rifki'},
-  {id:3,title:'Monetary Policy and Islamic Bank Stability in Indonesia',author:'Rifki Ismal (2015) · Bank Indonesia',type:'rifki'},
-  {id:4,title:'Islamic Monetary Economics: Finance and Banking in Contemporary Muslim Economies',author:'Rifki Ismal (2013) · Palgrave Macmillan',type:'rifki'},
-  {id:5,title:'The Indonesian Islamic Banking: Theory and Practices',author:'Rifki Ismal (2011) · Gramata Publishing',type:'rifki'},
-  {id:6,title:'IFSB Working Paper: Islamic Monetary Policy Instruments',author:'IFSB (2020) · ifsb.org',type:'ifsb'},
-  {id:7,title:'IFSB Guidance Note on Macroprudential Frameworks for Islamic Finance',author:'IFSB (2021) · ifsb.org',type:'ifsb'},
-  {id:8,title:'Laporan Ekonomi Keuangan Syariah (LEKSI) 2024',author:'Bank Indonesia (2024) · bi.go.id',type:'bi'},
-  {id:9,title:'Financial Stability Review BI – Kondisi Perbankan Syariah',author:'Bank Indonesia (2024) · bi.go.id',type:'bi'},
-  {id:10,title:'Monetary transmission mechanism in dual banking system',author:'Ramadhani & Siregar (2022) · JIMF Vol.8',type:'empiris'},
-  {id:11,title:'Macroprudential policy and Islamic banking stability',author:'Kabir et al. (2023) · Journal of Islamic Finance',type:'empiris'},
-  {id:12,title:'The effectiveness of SBIS in monetary transmission',author:'Utomo & Prasetyo (2021) · Bulletin BI',type:'empiris'},
-  {id:13,title:'ARDL approach to Islamic banking and economic growth',author:'Hassan & Bashir (2022) · Islamic Economic Studies',type:'empiris'},
-  {id:14,title:'Cash Waqaf Linked Sukuk: Social Finance Innovation',author:'Haneef et al. (2023) · INCEIF Working Paper',type:'empiris'},
-  {id:15,title:'Machine Learning for Macroeconomic Forecasting',author:'Coulombe et al. (2022) · Journal of Applied Econometrics',type:'ml'},
-  {id:16,title:'SHAP values for economic policy interpretation',author:'Lundberg & Lee (2021) · NeurIPS',type:'ml'},
-  {id:17,title:'XGBoost for financial stability prediction in banking',author:'Tanaka et al. (2023) · Finance Research Letters',type:'ml'},
-  {id:18,title:'Introduction to Econometrics (Time Series Methods)',author:'Stock & Watson (2020) · Pearson 4th Ed.',type:'metode'},
-  {id:19,title:'Applied Econometric Time Series – Enders',author:'Walter Enders (2014) · Wiley 4th Ed.',type:'metode'},
-  {id:20,title:'Research Methods in Islamic Finance – Panduan SLR',author:'Mohd Nor et al. (2021) · ISRA Research Paper',type:'metode'},
+  // --- Karya Dr. Rifki Ismal ---
+  {id:1,title:'Central bank Islamic monetary instruments: a theoretical approach',author:'Rifki Ismal (2011) · Studies in Economics and Finance 28(1)',type:'rifki'},
+  {id:2,title:'Islamic Banking in Indonesia: New Perspectives on Monetary and Financial Issues',author:'Rifki Ismal (2013) · John Wiley & Sons',type:'rifki'},
+  {id:3,title:'The Management of Liquidity Risk in Islamic Banks: The Case of Indonesia',author:'Rifki Ismal (2010) · Disertasi PhD, Durham University',type:'rifki'},
+  {id:4,title:'Assessment of liquidity management in Islamic banking industry',author:'Rifki Ismal (2010) · IJIMEFM 3(2)',type:'rifki'},
+  {id:5,title:'Model of Islamic Monetary Operation for Liquidity Management in Islamic Banking: Case of Indonesia 2000–2009',author:'Rifki Ismal (2009) · Gadjah Mada International Journal of Business 11(2)',type:'rifki'},
+  {id:6,title:'Depositors’ withdrawal behavior in Islamic banking: case of Indonesia',author:'Rifki Ismal (2011) · Humanomics 27(1)',type:'rifki'},
+  {id:7,title:'Analisis interaksi dan kontribusi SBIS Ju’alah dengan penyaluran pembiayaan perbankan syariah',author:'Ismal dkk. (2023) · Human Falah 10(1) · PEMBANDING UTAMA PILOT · cek penulis',type:'rifki'},
+  {id:8,title:'Islamic and conventional bank deposits: what drives Islamic deposit movement? A trade-off between religiosity and rationality',author:'Masrizal, Sukmana & Ismal (2025) · IJIMEFM 19(1)',type:'rifki'},
+  {id:9,title:'Unlocking the dormant potential of wakalah bi al-istitsmar',author:'Ismal (2025) · Jurnal Ilmiah Mizani 12(2) · cek penulis',type:'rifki'},
+  {id:10,title:'Identifying the optimal cash waqf linked sukuk: Indonesian experience',author:'Rifki Ismal (2022) · Hamdard Islamicus 45(3)',type:'rifki'},
+  // --- Dokumen Bank Indonesia ---
+  {id:11,title:'PBI tentang Operasi Moneter (PBI 22/14/PBI/2020 dan perubahannya)',author:'Bank Indonesia · cek akad FASBIS dan ketentuan SukBI terbaru',type:'bi'},
+  {id:12,title:'Metadata dan tabel SEKI: Operasi Moneter',author:'Bank Indonesia · cek seri SukBI dan PUAS',type:'bi'},
+  {id:13,title:'Laporan Ekonomi dan Keuangan Syariah (edisi terbaru)',author:'Bank Indonesia · bi.go.id',type:'bi'},
+  {id:14,title:'Kajian Stabilitas Keuangan (edisi terbaru)',author:'Bank Indonesia · bi.go.id',type:'bi'},
+  // --- IFSB ---
+  {id:15,title:'Islamic Financial Services Industry Stability Report (edisi terbaru)',author:'IFSB · ifsb.org · cek judul',type:'ifsb'},
+  // --- Jurnal empiris pembanding ---
+  {id:16,title:'Pengaruh SBIS, SukBI, FASBIS, PUAS, dan pembiayaan bank syariah terhadap pertumbuhan ekonomi dan inflasi',author:'JEKI UII · journal.uii.ac.id/JEKI/article/view/30865 · cek judul dan penulis',type:'empiris'},
+  // --- Machine learning ---
+  {id:17,title:'How is machine learning useful for macroeconomic forecasting?',author:'Goulet Coulombe, Leroux, Stevanovic & Surprenant (2022) · Journal of Applied Econometrics',type:'ml'},
+  {id:18,title:'A Unified Approach to Interpreting Model Predictions (SHAP)',author:'Lundberg & Lee (2017) · NeurIPS',type:'ml'},
+  // --- Metodologi ---
+  {id:19,title:'Applied Econometric Time Series',author:'Walter Enders (2014) · Wiley, 4th Ed.',type:'metode'},
+  {id:20,title:'Computation and analysis of multiple structural change models',author:'Bai & Perron (2003) · Journal of Applied Econometrics',type:'metode'},
 ];
 const RTYPE={rifki:{label:'Paper Dr. Rifki',c:'#B45309'},bi:{label:'Dokumen BI',c:'#1B6B9E'},ifsb:{label:'IFSB',c:'#1B6B9E'},empiris:{label:'Jurnal Empiris',c:'#2E7D4F'},ml:{label:'ML / Data Science',c:'#6B4FA0'},metode:{label:'Metodologi',c:'#555'}};
 const SCHEDULE=[
